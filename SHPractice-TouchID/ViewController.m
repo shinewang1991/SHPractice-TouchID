@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import <LocalAuthentication/LocalAuthentication.h>
 
 @interface ViewController ()
 
@@ -16,13 +17,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self touchIDTest];
+}
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)touchIDTest{
+    //判断设备是否支持指纹识别. iPhone5S以后以及iOS8系统以后才支持
+    LAContext *context = [[LAContext alloc] init];
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:NULL]){
+        [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics localizedReason:@"需要指纹登录" reply:^(BOOL success, NSError * _Nullable error) {
+            NSLog(success ? @"指纹验证成功" : @"指纹验证失败%@",error);
+        }];
+    }
+    else{
+        NSLog(@"不支持指纹识别");
+    }
+    
+    
 }
 
 
